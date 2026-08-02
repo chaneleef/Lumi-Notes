@@ -56,7 +56,7 @@ Open the URL Vite prints (usually **http://localhost:5173**) and start making no
 
 - **Your own database = your own notes.** Each person who runs this uses their own
   MongoDB, so you'll only ever see the notes in your own database.
-- **No accounts/login.** Everyone connected to the *same* database shares the *same*
+- **No accounts/login.** Everyone connected to the _same_ database shares the _same_
   notes. This is a learning project, not a multi-user product.
 - **Upstash is optional.** If you don't set the `UPSTASH_REDIS_*` values, rate limiting
   simply turns off (the app "fails open") and everything else works normally. To enable
@@ -67,12 +67,12 @@ Open the URL Vite prints (usually **http://localhost:5173**) and start making no
 
 See [`backend/.env.example`](backend/.env.example) for the full list:
 
-| Variable                    | Required | Description                                  |
-| --------------------------- | -------- | -------------------------------------------- |
-| `MONGO_URI`                 | ✅       | MongoDB Atlas connection string              |
-| `PORT`                      | ✅       | API port — keep at `5002`                    |
-| `CLIENT_URL`                | ➖       | Frontend origin for CORS (default `:5173`)   |
-| `UPSTASH_REDIS_REST_URL`    | ➖       | Upstash Redis REST URL (rate limiting)       |
-| `UPSTASH_REDIS_REST_TOKEN`  | ➖       | Upstash Redis REST token (rate limiting)     |
+| Variable                   | Required | Description                                |
+| -------------------------- | -------- | ------------------------------------------ |
+| `MONGO_URI`                | ✅       | MongoDB Atlas connection string            |
+| `PORT`                     | ✅       | API port — keep at `5002`                  |
+| `CLIENT_URL`               | ➖       | Frontend origin for CORS (default `:5173`) |
+| `UPSTASH_REDIS_REST_URL`   | ➖       | Upstash Redis REST URL (rate limiting)     |
+| `UPSTASH_REDIS_REST_TOKEN` | ➖       | Upstash Redis REST token (rate limiting)   |
 
 > ⚠️ Never commit your real `.env` — it's already in `.gitignore`.
