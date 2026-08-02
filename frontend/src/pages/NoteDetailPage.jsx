@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { ArrowLeft, Trash2 } from "lucide-react";
 
 import api from "../lib/axios";
+import LoadingBear from "../components/LoadingBear";
 
 const NoteDetailPage = () => {
   const { id } = useParams();
@@ -11,9 +12,13 @@ const NoteDetailPage = () => {
 
   const [note, setNote] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showLoader, setShowLoader] = useState(false);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
+    // only reveal the bear if the fetch takes longer than 3 seconds
+    const loaderTimer = setTimeout(() => setShowLoader(true), 3000);
+
     const fetchNote = async () => {
       try {
         const res = await api.get(`/notes/${id}`);
@@ -27,11 +32,14 @@ const NoteDetailPage = () => {
           toast.error("Failed to load note.");
         }
       } finally {
+        clearTimeout(loaderTimer);
         setLoading(false);
       }
     };
 
     fetchNote();
+
+    return () => clearTimeout(loaderTimer);
   }, [id, navigate]);
 
   const handleSave = async (e) => {
@@ -72,12 +80,7 @@ const NoteDetailPage = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex flex-col items-center gap-3 py-20">
-        <span className="animate-float text-4xl">🌸</span>
-        <p className="font-display text-slate-400">loading...</p>
-      </div>
-    );
+    return showLoader ? <LoadingBear label="loading..." /> : null;
   }
 
   if (!note) return null;

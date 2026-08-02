@@ -25,3 +25,87 @@ body {
 .animate-float-slow {
   animation: float 6s ease-in-out infinite;
 }
+
+/* ===== walking bear loader ===== */
+/* bear strolls across the 240px track (240 - 48px bear = 192px) and back */
+@keyframes bear-across {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(192px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+/* gentle bob + waddle sway */
+@keyframes bear-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+  50% {
+    transform: translateY(-3px) rotate(4deg);
+  }
+}
+/* alternating little steps */
+@keyframes bear-step-a {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2.5px);
+  }
+}
+@keyframes bear-step-b {
+  0%,
+  100% {
+    transform: translateY(-2.5px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+}
+/* pink fill trails the bear as it walks */
+@keyframes bear-bar {
+  0% {
+    width: 10%;
+  }
+  50% {
+    width: 100%;
+  }
+  100% {
+    width: 10%;
+  }
+}
+.bear-across {
+  animation: bear-across 3s ease-in-out infinite;
+}
+.bear-bob {
+  animation: bear-bob 0.5s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.bear-step-a {
+  animation: bear-step-a 0.5s ease-in-out infinite;
+  transform-box: fill-box;
+}
+.bear-step-b {
+  animation: bear-step-b 0.5s ease-in-out infinite;
+  transform-box: fill-box;
+}
+.bear-bar {
+  animation: bear-bar 3s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bear-across,
+  .bear-bob,
+  .bear-step-a,
+  .bear-step-b,
+  .bear-bar {
+    animation: none;
+  }
+}

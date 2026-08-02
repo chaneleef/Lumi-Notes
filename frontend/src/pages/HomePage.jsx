@@ -6,13 +6,18 @@ import { Plus } from "lucide-react";
 import api from "../lib/axios";
 import NoteCard from "../components/NoteCard";
 import RateLimitedUI from "../components/RateLimitedUI";
+import LoadingBear from "../components/LoadingBear";
 
 const HomePage = () => {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showLoader, setShowLoader] = useState(false);
   const [isRateLimited, setIsRateLimited] = useState(false);
 
   useEffect(() => {
+    // only reveal the bear if the fetch takes longer than 3 seconds
+    const loaderTimer = setTimeout(() => setShowLoader(true), 3000);
+
     const fetchNotes = async () => {
       try {
         const res = await api.get("/notes");
@@ -26,11 +31,14 @@ const HomePage = () => {
           toast.error("Failed to load notes.");
         }
       } finally {
+        clearTimeout(loaderTimer);
         setLoading(false);
       }
     };
 
     fetchNotes();
+
+    return () => clearTimeout(loaderTimer);
   }, []);
 
   const handleDelete = async (id) => {
@@ -51,10 +59,7 @@ const HomePage = () => {
       {isRateLimited && <RateLimitedUI />}
 
       {loading ? (
-        <div className="flex flex-col items-center gap-3 py-20">
-          <span className="animate-float text-4xl">🌸</span>
-          <p className="font-display text-slate-400">loading your notes...</p>
-        </div>
+        showLoader ? <LoadingBear label="loading your notes..." /> : null
       ) : notes.length === 0 && !isRateLimited ? (
         <div className="mx-auto max-w-md rounded-[2rem] border border-white/70 bg-white/70 px-6 py-16 text-center shadow-sm shadow-pink-100 backdrop-blur">
           <span className="mb-2 inline-block animate-float text-6xl">📝</span>
