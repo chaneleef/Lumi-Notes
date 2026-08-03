@@ -16,52 +16,30 @@ Create, view, edit, and delete notes — with a soft pink & white theme and a wa
 
 ## Tech stack
 
-- **Frontend:** React 19 + Vite, React Router, Tailwind CSS v4, react-hot-toast, lucide-react
-- **Backend:** Node + Express, Mongoose (MongoDB)
-- **Rate limiting (optional):** Upstash Redis
-
-## Prerequisites
-
-- [Node.js](https://nodejs.org/) 18+ and npm
-- A free [MongoDB Atlas](https://www.mongodb.com/atlas) account (for the database)
+React 19 · Vite · React Router · Tailwind CSS v4 · react-hot-toast · lucide-react · Node.js · Express · MongoDB · Mongoose · JWT · bcrypt · Upstash Redis
 
 ## Getting started
 
-### 1. Clone the repo
+**You'll need:** [Node.js](https://nodejs.org/) 18+ and a free [MongoDB Atlas](https://www.mongodb.com/atlas) account.
 
 ```bash
+# 1. Clone
 git clone https://github.com/chaneleef/Lumi-Notes.git
 cd Lumi-Notes
-```
 
-### 2. Set up the backend
-
-```bash
+# 2. Backend — then add your MONGO_URI and a JWT_SECRET to .env
 cd backend
 npm install
-cp .env.example .env      # on Windows: copy .env.example .env
-```
+cp .env.example .env        # Windows: copy .env.example .env
+npm run dev                 # API on http://localhost:5002
 
-Open `.env` and fill in your own **MongoDB connection string** (`MONGO_URI`).
-You get this from Atlas → your cluster → **Connect → Drivers**. Keep `PORT=5002`.
-
-Then start the API:
-
-```bash
-npm run dev
-```
-
-You should see `MONGODB CONNECTED SUCCESSFULLY!` and `Server started on PORT: 5002`.
-
-### 3. Set up the frontend (in a second terminal)
-
-```bash
+# 3. Frontend (new terminal)
 cd frontend
 npm install
-npm run dev
+npm run dev                 # open the URL Vite prints, usually http://localhost:5173
 ```
 
-Open the URL Vite prints (usually **http://localhost:5173**) and start making notes! 🌸
+Then sign up, log in, or continue as a guest, and start making notes.
 
 ## Notes on configuration
 
