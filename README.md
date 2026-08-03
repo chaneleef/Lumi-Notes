@@ -3,6 +3,17 @@
 A cute, kawaii-styled notes app built with the **MERN** stack (MongoDB, Express, React, Node).
 Create, view, edit, and delete notes — with a soft pink & white theme and a walking bear loader. ✨
 
+## Features
+
+- ✍️ Create, view, edit, and delete notes
+- 👤 Accounts — sign up / log in, with each user's notes kept private
+- 🔒 Secure auth — bcrypt-hashed passwords + JWT in an httpOnly cookie
+- 🧸 Guest mode — try it without an account (notes saved only in your browser)
+- 🐻 Walking-bear loading animation (shown only if loading takes over 3s)
+- 🚦 Optional Redis rate limiting (fails open when not configured)
+- 🌸 Responsive pink & white UI (Tailwind CSS v4, Fredoka font)
+- 🔔 Toast notifications for actions
+
 ## Tech stack
 
 - **Frontend:** React 19 + Vite, React Router, Tailwind CSS v4, react-hot-toast, lucide-react
@@ -79,17 +90,71 @@ See [`backend/.env.example`](backend/.env.example) for the full list:
 
 > ⚠️ Never commit your real `.env` — it's already in `.gitignore`.
 
+## Project structure
+
+```
+Lumi-Notes/
+├── backend/
+│   └── src/
+│       ├── config/
+│       │   ├── db.js              # MongoDB connection
+│       │   └── upstash.js         # Upstash Redis client (rate limiting)
+│       ├── controllers/
+│       │   ├── authController.js  # register, login, logout, me
+│       │   └── notesController.js # notes CRUD, scoped to the owner
+│       ├── lib/
+│       │   └── token.js           # sign / clear the JWT auth cookie
+│       ├── middleware/
+│       │   ├── protectRoute.js    # verifies the auth cookie
+│       │   └── rateLimiter.js     # rate limit (fails open)
+│       ├── models/
+│       │   ├── Note.js            # note schema (title, content, owner)
+│       │   └── User.js            # user schema (name, email, password hash)
+│       ├── routes/
+│       │   ├── authRoutes.js      # /api/auth/*
+│       │   └── notesRoutes.js     # /api/notes/* (protected)
+│       └── server.js              # Express app entry
+└── frontend/
+    └── src/
+        ├── components/            # Navbar, NoteCard, LoadingBear, GuestBanner, RateLimitedUI
+        ├── context/
+        │   └── AuthContext.jsx    # auth state + guest mode
+        ├── lib/
+        │   ├── axios.js           # API client (sends the auth cookie)
+        │   └── notesStore.js      # server store vs. guest localStorage store
+        ├── pages/                 # Home, Create, NoteDetail, Login, Signup
+        ├── App.jsx                # routes + route protection
+        └── main.jsx               # app entry (providers)
+```
+
+## API reference
+
+Base URL: `http://localhost:5002/api`
+
+**Auth**
+
+| Method | Endpoint         | Auth | Description                     |
+| ------ | ---------------- | ---- | ------------------------------- |
+| POST   | `/auth/register` | —    | Create an account (sets cookie) |
+| POST   | `/auth/login`    | —    | Log in (sets cookie)            |
+| POST   | `/auth/logout`   | —    | Clear the auth cookie           |
+| GET    | `/auth/me`       | ✅   | Get the current user            |
+
+**Notes** (all require auth)
+
+| Method | Endpoint     | Description              |
+| ------ | ------------ | ------------------------ |
+| GET    | `/notes`     | List your notes          |
+| GET    | `/notes/:id` | Get one of your notes    |
+| POST   | `/notes`     | Create a note            |
+| PUT    | `/notes/:id` | Update one of your notes |
+| DELETE | `/notes/:id` | Delete one of your notes |
+
+## Future plans
+
+- 🔗 Deploy a public link so anyone can use the app independently (hosted frontend + backend + database).
+- 🔔 An in-app reminders tab that detects when a note mentions a future due date or event, suggests adding a reminder, and sends notifications when they're due.
+
 ## AI assistance
 
-Parts of this project were built with help from [Claude](https://claude.com/claude-code) (Anthropic):
-
-- **Front-end styling / CSS** — the pink & white theme and the walking bear loader animation.
-- **Sign-up & authorization** — user accounts, password hashing, JWT httpOnly-cookie sessions, and route protection.
-
-Everything else was built by me, including:
-
-- The notes REST API — the CRUD controllers and Express routes.
-- The MongoDB data model and database connection (Mongoose).
-- The Express server setup and rate-limiting middleware.
-- The React + Vite project structure, page setup, and routing.
-- The navbar and the app's typography (Fredoka font).
+Built with help from [Claude](https://claude.com/claude-code) (Anthropic): the front-end styling/CSS and the sign-up/authorization layer. Everything else — the notes API, data models, Express server, project structure, navbar, and font — was built by me.
