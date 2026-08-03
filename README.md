@@ -16,7 +16,9 @@ Create, view, edit, and delete notes — with a soft pink & white theme and a wa
 
 ## Tech stack
 
-React 19 · Vite · React Router · Tailwind CSS v4 · react-hot-toast · lucide-react · Node.js · Express · MongoDB · Mongoose · JWT · bcrypt · Upstash Redis
+- **Frontend:** React 19 + Vite, React Router, Tailwind CSS v4, react-hot-toast, lucide-react
+- **Backend:** Node + Express, Mongoose (MongoDB), JWT + bcrypt (auth)
+- **Rate limiting (optional):** Upstash Redis
 
 ## Getting started
 
