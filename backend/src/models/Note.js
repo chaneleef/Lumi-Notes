@@ -6,6 +6,13 @@ import mongoose from "mongoose";
 
 const noteSchema = new mongoose.Schema(
   {
+    // which user owns this note — every query is scoped to this
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
     title:{
      type: String,
      required: true,
@@ -14,7 +21,7 @@ const noteSchema = new mongoose.Schema(
      type: String,
      required: true,
     },
-  }, 
+  },
   { timestamps: true } // createdAt, updatedAt
 );
 

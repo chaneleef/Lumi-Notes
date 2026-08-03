@@ -1,7 +1,11 @@
 import express from "express"
 import { createNote, deleteNote, getAllNotes, updateNote, getNoteById } from "../../src/controllers/notesController.js";
+import protectRoute from "../middleware/protectRoute.js";
 
 const router = express.Router();
+
+// every notes route requires a logged-in user
+router.use(protectRoute);
 
 router.get("/", getAllNotes);
 router.get("/:id", getNoteById);

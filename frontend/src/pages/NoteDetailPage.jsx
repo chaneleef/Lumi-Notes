@@ -3,12 +3,13 @@ import { Link, useNavigate, useParams } from "react-router";
 import toast from "react-hot-toast";
 import { ArrowLeft, Trash2 } from "lucide-react";
 
-import api from "../lib/axios";
 import LoadingBear from "../components/LoadingBear";
+import { useNotesStore } from "../lib/notesStore";
 
 const NoteDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const store = useNotesStore();
 
   const [note, setNote] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -21,14 +22,20 @@ const NoteDetailPage = () => {
 
     const fetchNote = async () => {
       try {
-        const res = await api.get(`/notes/${id}`);
-        setNote(res.data);
+        const data = await store.getById(id);
+        if (!data) {
+          // guest note missing, or server returned nothing
+          toast.error("Note not found.");
+          navigate("/");
+          return;
+        }
+        setNote(data);
       } catch (error) {
         console.error("Error fetching note", error);
         if (error.response?.status === 404) {
           toast.error("Note not found.");
           navigate("/");
-        } else {
+        } else if (error.response?.status !== 401) {
           toast.error("Failed to load note.");
         }
       } finally {
@@ -40,42 +47,39 @@ const NoteDetailPage = () => {
     fetchNote();
 
     return () => clearTimeout(loaderTimer);
-  }, [id, navigate]);
+  }, [id, navigate, store]);
 
   const handleSave = async (e) => {
     e.preventDefault();
 
     if (!note.title.trim() || !note.content.trim()) {
-      toast.error("Please fill in both fields 🥺");
+      toast.error("Please fill in both fields.");
       return;
     }
 
     setSaving(true);
     try {
-      await api.put(`/notes/${id}`, {
-        title: note.title,
-        content: note.content,
-      });
-      toast.success("Note updated 🌸");
+      await store.update(id, { title: note.title, content: note.content });
+      toast.success("Note updated");
       navigate("/");
     } catch (error) {
       console.error("Error updating note", error);
-      toast.error("Failed to update note.");
+      if (error.response?.status !== 401) toast.error("Failed to update note.");
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!window.confirm("Delete this little note? 🥺")) return;
+    if (!window.confirm("Delete this note?")) return;
 
     try {
-      await api.delete(`/notes/${id}`);
-      toast.success("Note deleted 🌸");
+      await store.remove(id);
+      toast.success("Note deleted");
       navigate("/");
     } catch (error) {
       console.error("Error deleting note", error);
-      toast.error("Failed to delete note.");
+      if (error.response?.status !== 401) toast.error("Failed to delete note.");
     }
   };
 
@@ -108,7 +112,7 @@ const NoteDetailPage = () => {
 
       <div className="mt-6 rounded-[2rem] border border-white/70 bg-white/70 p-7 shadow-sm shadow-pink-100 backdrop-blur">
         <h1 className="font-display text-2xl font-extrabold text-slate-800">
-          edit note 🖊️
+          edit note
         </h1>
 
         <form onSubmit={handleSave} className="mt-6 space-y-5">
@@ -141,7 +145,7 @@ const NoteDetailPage = () => {
             disabled={saving}
             className="inline-flex items-center gap-2 rounded-full bg-pink-400 px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-pink-300/50 transition hover:-translate-y-0.5 hover:bg-pink-500 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {saving ? "Saving... 🌷" : "Save changes 💕"}
+            {saving ? "Saving..." : "Save changes"}
           </button>
         </form>
       </div>

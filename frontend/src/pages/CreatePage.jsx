@@ -3,9 +3,10 @@ import { Link, useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import { ArrowLeft } from "lucide-react";
 
-import api from "../lib/axios";
+import { useNotesStore } from "../lib/notesStore";
 
 const CreatePage = () => {
+  const store = useNotesStore();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [saving, setSaving] = useState(false);
@@ -15,20 +16,20 @@ const CreatePage = () => {
     e.preventDefault();
 
     if (!title.trim() || !content.trim()) {
-      toast.error("Please fill in both fields 🥺");
+      toast.error("Please fill in both fields.");
       return;
     }
 
     setSaving(true);
     try {
-      await api.post("/notes", { title, content });
-      toast.success("Note created 🌸");
+      await store.create({ title, content });
+      toast.success("Note created");
       navigate("/");
     } catch (error) {
       console.error("Error creating note", error);
       if (error.response?.status === 429) {
-        toast.error("Too many requests — slow down a little 🍡");
-      } else {
+        toast.error("Too many requests — please slow down.");
+      } else if (error.response?.status !== 401) {
         toast.error("Failed to create note.");
       }
     } finally {
@@ -48,10 +49,10 @@ const CreatePage = () => {
 
       <div className="mt-6 rounded-[2rem] border border-white/70 bg-white/70 p-7 shadow-sm shadow-pink-100 backdrop-blur">
         <h1 className="font-display text-2xl font-extrabold text-slate-800">
-          new note ✨
+          new note
         </h1>
         <p className="mt-1 text-sm text-slate-500">
-          write down whatever&apos;s on your mind 💭
+          write down whatever&apos;s on your mind
         </p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-5">
@@ -63,7 +64,7 @@ const CreatePage = () => {
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="give it a cute title~"
+              placeholder="give it a title"
               className="w-full rounded-2xl border border-pink-100 bg-white/80 px-4 py-2.5 text-slate-700 placeholder:text-slate-300 outline-none transition focus:border-pink-300 focus:ring-4 focus:ring-pink-100"
             />
           </div>
@@ -86,7 +87,7 @@ const CreatePage = () => {
             disabled={saving}
             className="inline-flex items-center gap-2 rounded-full bg-pink-400 px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-pink-300/50 transition hover:-translate-y-0.5 hover:bg-pink-500 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {saving ? "Saving... 🌷" : "Create note 💕"}
+            {saving ? "Saving..." : "Create note"}
           </button>
         </form>
       </div>

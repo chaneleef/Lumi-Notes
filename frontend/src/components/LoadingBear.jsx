@@ -1,4 +1,4 @@
-// A cute white & pink kawaii bear that waddles along a filling loading bar.
+// A white & pink bear that waddles along a filling loading bar.
 // Pure SVG + CSS (keyframes live in index.css) — no image/video asset needed.
 const LoadingBear = ({ label = "loading..." }) => {
   return (

@@ -3,12 +3,17 @@ import { Link } from "react-router";
 import toast from "react-hot-toast";
 import { Plus } from "lucide-react";
 
-import api from "../lib/axios";
 import NoteCard from "../components/NoteCard";
 import RateLimitedUI from "../components/RateLimitedUI";
 import LoadingBear from "../components/LoadingBear";
+import GuestBanner from "../components/GuestBanner";
+import { useAuth } from "../context/AuthContext";
+import { useNotesStore } from "../lib/notesStore";
 
 const HomePage = () => {
+  const { mode } = useAuth();
+  const store = useNotesStore();
+
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showLoader, setShowLoader] = useState(false);
@@ -20,14 +25,15 @@ const HomePage = () => {
 
     const fetchNotes = async () => {
       try {
-        const res = await api.get("/notes");
-        setNotes(res.data);
+        const data = await store.getAll();
+        setNotes(data);
         setIsRateLimited(false);
       } catch (error) {
         console.error("Error fetching notes", error);
         if (error.response?.status === 429) {
           setIsRateLimited(true);
-        } else {
+        } else if (error.response?.status !== 401) {
+          // 401 is handled globally (redirect to login); don't toast it here
           toast.error("Failed to load notes.");
         }
       } finally {
@@ -39,15 +45,15 @@ const HomePage = () => {
     fetchNotes();
 
     return () => clearTimeout(loaderTimer);
-  }, []);
+  }, [store]);
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this little note? 🥺")) return;
+    if (!window.confirm("Delete this note?")) return;
 
     try {
-      await api.delete(`/notes/${id}`);
+      await store.remove(id);
       setNotes((prev) => prev.filter((note) => note._id !== id));
-      toast.success("Note deleted 🌸");
+      toast.success("Note deleted");
     } catch (error) {
       console.error("Error deleting note", error);
       toast.error("Failed to delete note.");
@@ -56,18 +62,18 @@ const HomePage = () => {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10">
+      {mode === "guest" && <GuestBanner />}
       {isRateLimited && <RateLimitedUI />}
 
       {loading ? (
         showLoader ? <LoadingBear label="loading your notes..." /> : null
       ) : notes.length === 0 && !isRateLimited ? (
         <div className="mx-auto max-w-md rounded-[2rem] border border-white/70 bg-white/70 px-6 py-16 text-center shadow-sm shadow-pink-100 backdrop-blur">
-          <span className="mb-2 inline-block animate-float text-6xl">📝</span>
-          <h2 className="font-display mt-2 text-2xl font-bold text-slate-800">
-            no notes yet~
+          <h2 className="font-display text-2xl font-bold text-slate-800">
+            no notes yet
           </h2>
           <p className="mt-1 text-sm text-slate-500">
-            your board is a blank canvas. let&apos;s make the first one! 💕
+            your board is a blank canvas. make the first one.
           </p>
           <Link
             to="/create"
