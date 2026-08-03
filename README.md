@@ -1,18 +1,18 @@
 # 🐻 Lumi Notes
 
 A cute, kawaii-styled notes app built with the **MERN** stack (MongoDB, Express, React, Node).
-Create, view, edit, and delete notes — with a soft pink & white theme and a walking bear loader. ✨
+Create, view, edit, and delete notes — with a soft pink & white theme and a walking bear loader.
 
 ## Features
 
-- ✍️ Create, view, edit, and delete notes
-- 👤 Accounts — sign up / log in, with each user's notes kept private
-- 🔒 Secure auth — bcrypt-hashed passwords + JWT in an httpOnly cookie
-- 🧸 Guest mode — try it without an account (notes saved only in your browser)
-- 🐻 Walking-bear loading animation (shown only if loading takes over 3s)
-- 🚦 Optional Redis rate limiting (fails open when not configured)
-- 🌸 Responsive pink & white UI (Tailwind CSS v4, Fredoka font)
-- 🔔 Toast notifications for actions
+- Create, view, edit, and delete notes
+- Accounts — sign up / log in, with each user's notes kept private
+- Secure auth — bcrypt-hashed passwords + JWT in an httpOnly cookie
+- Guest mode — try it without an account (notes saved only in your browser)
+- Walking-bear loading animation (shown only if loading takes over 3s)
+- Optional Redis rate limiting (fails open when not configured)
+- Responsive pink & white UI (Tailwind CSS v4, Fredoka font)
+- Toast notifications for actions
 
 ## Tech stack
 
